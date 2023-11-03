@@ -1,59 +1,68 @@
 package com.example.sampleapplication
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import com.example.sampleapplication.databinding.FragmentSplashBinding
+import com.example.sampleapplication.utils.application.AppService
+import com.example.sampleapplication.utils.build_config.BuildConfig.Companion.INTERVAL
+import com.example.sampleapplication.utils.extention.initVersion
+import com.example.sampleapplication.utils.tools.HandleErrorTools
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import org.koin.android.ext.android.inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SplashFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SplashFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentSplashBinding
+    private lateinit var navController: NavController
+    private lateinit var bottomSheetDialog: BottomSheetDialog
+    private val handleErrorTools: HandleErrorTools by inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_splash, container, false)
+        binding = FragmentSplashBinding.inflate(layoutInflater)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SplashFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SplashFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onStart() {
+        super.onStart()
+        try {
+            initAction()
+        } catch (e: Exception) {
+            handleErrorTools.handleError(e)
+        }
     }
+
+    private fun initAction() {
+        initNavController()
+        initSetView()
+        initHandler()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun initSetView() {
+        binding.txtVersionApp.text =
+            "${resources.getString(R.string.version_app)} ${requireContext().initVersion()}"
+    }
+
+    private fun initNavController() {
+        navController = Navigation.findNavController(AppService.activity, R.id.my_nav_fragment)
+    }
+
+    private fun initHandler() {
+        Handler().postDelayed({
+          navController.popBackStack()
+          navController.navigate(R.id.homeFragment)
+        }, INTERVAL)
+    }
+
 }
