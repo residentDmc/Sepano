@@ -85,5 +85,8 @@ dependencies {
 
     // dimens
     implementation("com.intuit.sdp:sdp-android:1.1.0")
-    
+
+    // bluetooth
+    implementation("com.github.tlgbltcn:BluetoothHelper:v1.7")
+
 }

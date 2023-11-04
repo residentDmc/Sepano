@@ -1,5 +1,6 @@
 package com.example.sampleapplication
 
+import android.bluetooth.BluetoothDevice
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -11,21 +12,26 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import c.tlgbltcn.library.BluetoothHelper
+import c.tlgbltcn.library.BluetoothHelperListener
 import com.example.sampleapplication.databinding.FragmentHomeBinding
 import com.example.sampleapplication.ui.view.activity.MainActivity
+import com.example.sampleapplication.ui.view.adapter.BluetoothAdapter
 import com.example.sampleapplication.utils.application.AppService
 import com.example.sampleapplication.utils.build_config.BuildConfig.Companion.INTERVAL
 import com.example.sampleapplication.utils.extention.setSystemBarColor
 import com.example.sampleapplication.utils.tools.HandleErrorTools
 import com.example.sampleapplication.utils.tools.ToastTools
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.android.ext.android.inject
 
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var navController: NavController
-    private lateinit var bottomSheetDialog: BottomSheetDialog
+    private lateinit var bluetoothHelper: BluetoothHelper
+    private val bluetoothAdapter: BluetoothAdapter by inject()
     private val handleErrorTools: HandleErrorTools by inject()
     private val toastTools: ToastTools by inject()
     private var doubleBackToExitPressedOnce = false
@@ -48,15 +54,66 @@ class HomeFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        bluetoothHelper.registerBluetoothStateChanged()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        bluetoothHelper.unregisterBluetoothStateChanged()
+    }
+
     private fun initAction() {
         initNavController()
         initToolbar()
         initNavigationMenu()
+        initOnClick()
+        initAdapter()
+        initBluetooth()
         initOnBackPress()
     }
 
+    private fun initOnClick() {
+        binding.included.imgBtnRefresh.setOnClickListener { initRefreshList() }
+    }
+
+    private fun initAdapter() {
+        val linearLayoutManager =
+            LinearLayoutManager(AppService.context, RecyclerView.VERTICAL, false)
+        binding.includeDrawerContent.recyclerView.layoutManager = linearLayoutManager
+        binding.includeDrawerContent.recyclerView.setHasFixedSize(true)
+        binding.includeDrawerContent.recyclerView.adapter = bluetoothAdapter
+    }
+
+    private fun initBluetooth() {
+        bluetoothHelper = BluetoothHelper(requireContext(), object : BluetoothHelperListener {
+            override fun getBluetoothDeviceList(device: BluetoothDevice?) {
+                bluetoothAdapter.updateList(device)
+            }
+
+            override fun onDisabledBluetooh() {
+
+            }
+
+            override fun onEnabledBluetooth() {
+
+            }
+
+            override fun onFinishDiscovery() {
+
+            }
+
+            override fun onStartDiscovery() {
+
+            }
+        })
+            .setPermissionRequired(true)
+            .create()
+    }
+
     private fun initToolbar() {
-        val currentActivity=(requireActivity() as MainActivity)
+        val currentActivity = (requireActivity() as MainActivity)
         currentActivity.setSupportActionBar(binding.included.toolbar)
         val actionBar = currentActivity.supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
@@ -83,14 +140,18 @@ class HomeFragment : Fragment() {
         binding.navView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_bluetooth -> {
+                    initRefreshList()
                     binding.drawerLayout.closeDrawers()
                 }
+
                 R.id.nav_calculate -> {
                     binding.drawerLayout.closeDrawers()
                 }
+
                 R.id.nav_memory -> {
                     binding.drawerLayout.closeDrawers()
                 }
+
                 R.id.nav_exit -> {
                     binding.drawerLayout.closeDrawers()
                     initFinishAffinity()
@@ -99,6 +160,12 @@ class HomeFragment : Fragment() {
             true
         }
         binding.drawerLayout.openDrawer(GravityCompat.START)
+    }
+
+    private fun initRefreshList() {
+        if (!bluetoothHelper.isBluetoothScanning())
+            bluetoothHelper.startDiscovery()
+        bluetoothAdapter.clearList()
     }
 
 
