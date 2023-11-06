@@ -172,5 +172,12 @@
         <item name="android:fontFamily">@font/iran_sans_regular</item>
     </style>
 
+    <style name="OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/accent</item>
+        <item name="cornerRadius">@dimen/_4sdp</item>
+        <item name="android:layout_marginEnd">@dimen/_1sdp</item>
+        <item name="android:layout_marginStart">@dimen/_1sdp</item>
+    </style>
+
 
 </resources>

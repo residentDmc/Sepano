@@ -5,8 +5,7 @@
     android:layout_height="?attr/actionBarSize"
     android:background="?attr/colorPrimary"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:contentInsetEnd="0dp"
-    app:contentInsetStart="0dp"
+    app:contentInsetStartWithNavigation="0dp"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
     <LinearLayout
@@ -15,19 +14,12 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <androidx.constraintlayout.utils.widget.ImageFilterButton
-            android:id="@+id/imgBtnBack"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="@color/white"
-            app:srcCompat="@drawable/ic_arrow_back" />
-
         <TextView
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_16sdp"
+            android:text="@string/bluetooth"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@color/white"
             android:textStyle="bold" />
@@ -37,7 +29,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-
+        <androidx.constraintlayout.utils.widget.ImageFilterButton
+            android:id="@+id/imgBtnRefresh"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="@color/white"
+            app:srcCompat="@drawable/ic_refresh" />
     </LinearLayout>
 
 </androidx.appcompat.widget.Toolbar>

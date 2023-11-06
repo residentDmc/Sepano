@@ -1,4 +1,4 @@
-package com.example.sampleapplication
+package com.example.sampleapplication.ui.view.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.example.sampleapplication.R
 import com.example.sampleapplication.databinding.FragmentSplashBinding
 import com.example.sampleapplication.utils.application.AppService
 import com.example.sampleapplication.utils.build_config.BuildConfig.Companion.INTERVAL

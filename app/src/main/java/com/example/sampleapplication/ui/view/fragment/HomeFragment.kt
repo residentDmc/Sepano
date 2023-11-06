@@ -1,4 +1,4 @@
-package com.example.sampleapplication
+package com.example.sampleapplication.ui.view.fragment
 
 import android.bluetooth.BluetoothDevice
 import android.os.Bundle
@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import c.tlgbltcn.library.BluetoothHelper
 import c.tlgbltcn.library.BluetoothHelperListener
+import com.example.sampleapplication.R
 import com.example.sampleapplication.databinding.FragmentHomeBinding
 import com.example.sampleapplication.ui.view.activity.MainActivity
 import com.example.sampleapplication.ui.view.adapter.BluetoothAdapter
@@ -145,10 +146,12 @@ class HomeFragment : Fragment() {
                 }
 
                 R.id.nav_calculate -> {
+                    navController.navigate(R.id.action_homeFragment_to_calculatorFragment)
                     binding.drawerLayout.closeDrawers()
                 }
 
                 R.id.nav_memory -> {
+                    navController.navigate(R.id.action_homeFragment_to_memoryInfoFragment)
                     binding.drawerLayout.closeDrawers()
                 }
 
@@ -165,7 +168,6 @@ class HomeFragment : Fragment() {
     private fun initRefreshList() {
         if (!bluetoothHelper.isBluetoothScanning())
             bluetoothHelper.startDiscovery()
-        bluetoothAdapter.clearList()
     }
 
 
